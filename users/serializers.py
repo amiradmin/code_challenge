@@ -25,3 +25,26 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         )
         Profile.objects.create(user=user, **profile_data)
         return user
+
+
+class UserSerializer(serializers.ModelSerializer):
+    profile = ProfileSerializer()
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'profile']
+        read_only_fields = ['id', 'username', 'email']
+
+    def update(self, instance, validated_data):
+        profile_data = validated_data.pop('profile')
+        profile = instance.profile
+
+        instance.email = validated_data.get('email', instance.email)
+        instance.save()
+
+        profile.bio = profile_data.get('bio', profile.bio)
+        profile.location = profile_data.get('location', profile.location)
+        profile.birth_date = profile_data.get('birth_date', profile.birth_date)
+        profile.save()
+
+        return instance

@@ -4,9 +4,11 @@ from rest_framework import serializers
 from .models import Book
 
 class BookSerializer(serializers.ModelSerializer):
+    status = serializers.SerializerMethodField()
+
     class Meta:
         model = Book
-        fields = ['id', 'title', 'author', 'published_date', 'isbn', 'user', 'created_at']
+        fields = ['id', 'title', 'author', 'published_date', 'isbn', 'user', 'created_at','reserved','status']
         read_only_fields = ['id', 'user', 'created_at']
 
     def validate_isbn(self, value):
@@ -47,3 +49,6 @@ class BookSerializer(serializers.ModelSerializer):
         """
         instance.delete()
         return None  # Return None to indicate the deletion was successful
+
+    def get_status(self, obj):
+        return obj.get_status()

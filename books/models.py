@@ -18,6 +18,8 @@ class Book(models.Model):
         The International Standard Book Number (ISBN) of the book.
     user : User
         The user who has currently borrowed the book. This field is optional.
+    reserved : bool
+        Indicates whether the book is reserved. Defaults to False.
     created_at : datetime
         The date and time when the book record was created.
     """
@@ -27,16 +29,15 @@ class Book(models.Model):
     published_date = models.DateField()
     isbn = models.CharField(max_length=13, unique=True)
     user = models.ForeignKey(User, related_name='books', on_delete=models.CASCADE, null=True, blank=True)
+    reserved = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        """
-        Returns a string representation of the book, which is its title.
-
-        Returns:
-        --------
-        str
-            The title of the book.
-        """
         return self.title
 
+    def get_status(self):
+        if self.user:
+            return "borrowed"
+        elif self.reserved:
+            return "reserved"
+        return "available"
