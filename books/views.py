@@ -2,8 +2,8 @@
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAdminUser,IsAuthenticated
-from .models import Book
-from .serializers import BookSerializer
+from .models import Book,Category
+from .serializers import BookSerializer,CategorySerializer
 
 # class BookViewSet(viewsets.ReadOnlyModelViewSet):
 #     """
@@ -18,8 +18,8 @@ class BookViewSet(viewsets.ModelViewSet):
     serializer_class = BookSerializer
     permission_classes = [IsAuthenticated]
 
-    # def get_permissions(self):
-    #     if self.action in ['update', 'partial_update']:
-    #         self.permission_classes = [IsAdminUser]
-    #     return super().get_permissions()
 
+class CategoryViewSet(viewsets.ModelViewSet):
+    queryset = Category.objects.all()
+    serializer_class = CategorySerializer
+    permission_classes = [IsAuthenticated]
